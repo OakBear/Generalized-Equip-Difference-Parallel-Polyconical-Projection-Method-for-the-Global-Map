@@ -296,8 +296,8 @@ class GeneralizedPolyconicalProjection:
         y_arr = np.atleast_1d(y_arr).copy()
 
         R = self.radius
-        eps = 1e-9  # keep away from poles
-        h = 1e-6    # central-difference step
+        eps = 1e-9  # small offset to avoid singularities at the poles (tan(±π/2) = ±∞)
+        h = 1e-6    # step size for central-difference derivative approximation
 
         # ------------------------------------------------------------------
         # Per-element residual function
@@ -325,6 +325,7 @@ class GeneralizedPolyconicalProjection:
                 df = (_f_scalar(phi_p, idx) - _f_scalar(phi_m, idx)) / (phi_p - phi_m)
                 if abs(df) < 1e-20:
                     break
+                # Clamp Newton step to ±0.5 rad (~28.6°) to prevent overshooting
                 step = max(-0.5, min(0.5, fv / df))
                 phi = max(-math.pi / 2 + eps, min(math.pi / 2 - eps, phi - step))
 

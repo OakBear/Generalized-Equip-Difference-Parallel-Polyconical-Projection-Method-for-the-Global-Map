@@ -153,6 +153,7 @@ def draw_tissot_indicatrices(
         for lon_c in np.arange(-150.0, 151.0, lon_step):
             # Small circle around (lon_c, lat_c)
             d_lat = radius_deg * np.cos(theta)
+            # cos(lat) → 0 near poles; clamp to 1e-3 to avoid division by zero
             d_lon = radius_deg / max(np.cos(np.radians(lat_c)), 1e-3) * np.sin(theta)
             circ_lons = lon_c + d_lon
             circ_lats = lat_c + d_lat
